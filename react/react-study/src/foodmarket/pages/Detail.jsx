@@ -1,6 +1,7 @@
 import { useParams,useNavigate } from "react-router";
-import {Container,Row,Col,Button} from 'react-bootstrap'
+import {Container,Row,Col,Button,Modal} from 'react-bootstrap'
 import { useState,useEffect } from "react";
+import './Detail.css'
 
 
 function Detail({foods}) {
@@ -33,17 +34,70 @@ function Detail({foods}) {
 
     let [orderCount, setOrderCount] = useState(0);
 
-    let [test, setTest] = useState(0);
+    let [test, setTest] = useState('');
 
 
     useEffect(()=>{
         console.log('useEffect 함수 실행. [ordercount] : ' + orderCount);
-    },[orderCount])  // 의존성배열있는 orderCount값
+
+        return () =>{  // clean up function
+            console.log('useEffect 함수 실행. [ordercount] -> return() 함수 실행');
+        }
+    },[orderCount])  // 의존성배열있는 orderCount값 -> 참고
 
     useEffect(()=>{
         console.log('useEffect 함수 실행. [test, orderCount] ');
-    } , [test, orderCount])  ; // 
+    } , [test, orderCount])  ; // 의존성배열있는 orderCount값 -> 참고
 
+
+    let [viewStatus,setViewStatus] = useState(0);
+
+    useEffect(()=>{
+
+        //setTimeout(함수,시간); 일정시간 후에 작동하도록 타이머거는 함수
+        setTimeout(()=>{
+            setViewStatus('end');
+        },300)//0.3초 1000:1초
+
+
+    },[])
+
+    let [modalShow,setModalShow] = useState(true); // 모달창 표시여부 true | false
+
+    //2초후에 Modal 창 자동으로 닫기
+
+    useEffect(()=>{
+        //modalShow state변수값 true -> false
+
+        setTimeout(()=>{
+            setModalShow(false);
+
+        },2000)  //2초후 실행
+    },[])
+
+
+    useEffect(()=>{
+        //setTimeout 일정시간 후에 작동
+        //setInterval 일정시간마다 반복으로 실행
+        //비동기방식
+
+        //clearTimeout
+        //clearInterval
+        const interv = setInterval(()=>{
+            console.log('interval')
+        },1000)  //1초마다 실행
+
+        //clean up function
+
+        return()=>{
+            clearInterval(interv);
+        }
+
+    },[orderCount])
+
+
+
+    //------------------------------------------------------------------------
 
 
     //상세보기를 눌렀을때
@@ -93,7 +147,7 @@ function Detail({foods}) {
 
     return(
         <div>
-            <Container>
+            <Container className={"start " + viewStatus}>
                 <Row>
                     <Col md={6}>
                         <img src={import.meta.env.BASE_URL + foodFind.imgPath} style={{width:'100%'}}/>
@@ -117,6 +171,33 @@ function Detail({foods}) {
                         <Button variant="primary">주문하기</Button>
                     </Col>
                 </Row>
+
+                <Modal
+                    show={modalShow}
+                    onHide={()=>{ setModalShow(false);} }
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                        어서오세요
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>우리 음식 맛있어요.</h4>
+                        <p>
+                        빨리먹으면 배탈나요. 많이 먹어요.
+                        </p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={()=>{ setModalShow(false);}}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+
+
+
+
             </Container>
         </div>
     )
