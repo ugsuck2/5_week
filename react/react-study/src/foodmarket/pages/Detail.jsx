@@ -1,8 +1,50 @@
 import { useParams,useNavigate } from "react-router";
 import {Container,Row,Col,Button} from 'react-bootstrap'
+import { useState,useEffect } from "react";
 
 
 function Detail({foods}) {
+
+    //------------------------------------------------\
+    /*
+
+    useEffect 훅 (Hooks)
+
+    useEffect(실행할함수, 의존성배열)
+
+
+    useEffect(실행할함수,[]) 빈배열 -> 생성시에만 실행
+    useEffect(실행할함수) 모든 로딩될때 실행(생성,update)
+    useEffect(실행할함수,[count]) -> conut값이 바뀔때 마다 실행
+    useEffect(실행할함수,[a,b,c]) -> a,b,c 중 하나라도 값이 바뀔때마다 실행
+
+    useEffect(실행할함수(){
+    return ()=>{ clean up function}}  //upmount  시 실행할 함수
+    , 의존성배열)
+    */
+
+    useEffect(()=>{
+        console.log('useEffect 함수 실행. (의존성배열없음)')
+    })  // 의존성배열x -> 매번실행
+
+    useEffect(()=>{
+        console.log('useEffect 함수 실행. [] 빈 의존성 배열 의존')
+    }, [])   // 빈배열 -> 생성/로딩시 1회 실행
+
+    let [orderCount, setOrderCount] = useState(0);
+
+    let [test, setTest] = useState(0);
+
+
+    useEffect(()=>{
+        console.log('useEffect 함수 실행. [ordercount] : ' + orderCount);
+    },[orderCount])  // 의존성배열있는 orderCount값
+
+    useEffect(()=>{
+        console.log('useEffect 함수 실행. [test, orderCount] ');
+    } , [test, orderCount])  ; // 
+
+
 
     //상세보기를 눌렀을때
     //특정 상품의 상세정보를 보여주는 페이지
@@ -62,9 +104,14 @@ function Detail({foods}) {
                         <p>{foodFind.price}</p>
 
                         <div>
-                            <Button variant="dard">-</Button>
-                            <span>0</span>
-                            <Button variant="dard">+</Button>
+                            <Button variant="dard" onClick={()=>{
+                                setOrderCount(orderCount-1)
+                            }}>-</Button>
+                            <span>{orderCount}</span>
+                            <Button variant="dard" onClick={()=>{
+                                setOrderCount(orderCount+1)
+                                console.log('onClick() 함수에서 출력' + orderCount)
+                            }}>+</Button>
                         </div>
 
                         <Button variant="primary">주문하기</Button>
