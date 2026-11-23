@@ -72,7 +72,7 @@ function Detail({foods}) {
 
     },[])
 
-    let [modalShow,setModalShow] = useState(true); // 모달창 표시여부 true | false
+    let [modalShow,setModalShow] = useState(false); // 모달창 표시여부 true | false
 
     //2초후에 Modal 창 자동으로 닫기
 
@@ -158,7 +158,130 @@ function Detail({foods}) {
         )
     }
 
+    //-----------------------------------------------------------------
+    /*
+        스타일 적용
 
+        조건에 따라서 스타일 적용
+        가격표시
+            1만원 이상 - > 빨간색 금액 표시
+            1만원 이하 - > 파란색 금액 표시
+
+        1) js 객체    
+
+        요소에 style 속성에는 js 객체로 설정 가능
+        <p style={{color:'red',fontSize:'20px'}}>
+        const priceTextStyle = {
+        //key : value
+        color: foodFind.price >= 10000 ? 'red' : 'blue'}   
+
+        2) js 함수 방식
+
+        const priceTextStyleFunc = (price)=>{
+        if(price>=10000) 
+            return {color:'red'}
+        else
+            return {color:'blue'}
+        // return(price>=10000 ? 'red' : 'blue')
+    }
+        <p style={priceTextStyleFunc(foodFind.price)}>{foodFind.price}</p>
+
+        3) css 클래스 연계 사용
+
+        //클래스이름 단일
+        <p className={ foodFind.price >= 10000 ? 'price-red' : 'price-blue'}>{foodFind.price}</p>
+
+        //클래스 여러개
+        <p className={ 'text-strong ' + (foodFind.price >= 10000 ? 'price-red' : 'price-blue')}>{foodFind.price}</p>
+        //배열 구조로 관리시 join함수 활용
+        <p className={ ['text-strong ', priceTextClassName ].join(' ') }>{foodFind.price}</p>
+
+        <p className={ `text-strong ${priceTextClassName}` }>{foodFind.price}</p>
+
+        // 백틱문자 활용  `` `` 백틱문자 안에서 js 변수, 수식 활용시 ${} 양식 
+        <p className={ `text-strong ${(foodFind.price>=10000 ? 'price-red' : 'price-blue')}` }>{foodFind.price}</p>
+        
+
+        
+        ['text-strong','price-red'].join(' ')
+        >>> text-strong price-red
+
+        [a,b,c].join('-')
+        >> a-b-c
+        
+        4) css class + useState + useEffect 조합 -> 효과 발생
+            
+        <Container className={"start " + viewStatus}>
+        
+        let [viewStatus,setViewStatus] = useState(0);
+
+        useEffect(()=>{
+
+        //setTimeout(함수,시간); 일정시간 후에 작동하도록 타이머거는 함수
+        setTimeout(()=>{
+            setViewStatus('end');
+        },300)//0.3초 1000:1초
+        },[])
+
+        5) js 객체로 내부에서 스타일 정의 및 사용
+        const styles = {
+        redStyle : {color:'red'} , 
+        blueStyle : {color:'blue'},
+
+        fontBigBold : {
+            fontSize : '36px',
+            fontWeight : 'bold'
+        },
+
+        titleStyle : {
+            paddingTop : '30px',
+            fontSize : '40px',
+            fontWeight : 'bold'
+        }
+    }
+    <h4 style={styles.titleStyle}>{foodFind.title}</h4>
+    <p style={styles.fontBigBold}>{foodFind.content}</p>
+
+    */
+
+    //1)
+    const priceTextStyle = {
+        //key : value
+        color: foodFind.price >= 10000 ? 'red' : 'blue'
+    }
+
+    //2)
+    const priceTextStyleFunc = (price)=>{
+        if(price>=10000) 
+            return {color:'red'}
+        else
+            return {color:'blue'}
+        // return(price>=10000 ? 'red' : 'blue')
+    }
+
+    //3)
+    const priceTextClassName = (foodFind.price >= 10000 ? 'price-red' : 'price-blue');
+
+    //5) 
+    const styles = {
+        redStyle : {color:'red'} , 
+        blueStyle : {color:'blue'},
+
+        fontBigBold : {
+            fontSize : '36px',
+            fontWeight : 'bold'
+        },
+
+        titleStyle : {
+            paddingTop : '30px',
+            fontSize : '40px',
+            fontWeight : 'bold'
+        }
+    }
+    
+
+
+    //--------------------------------------------------------------------
     return(
         <div>
             <Container className={"start " + viewStatus}>
@@ -167,9 +290,30 @@ function Detail({foods}) {
                         <img src={import.meta.env.BASE_URL + foodFind.imgPath} style={{width:'100%'}}/>
                     </Col>
                     <Col md={6}>
-                        <h4>{foodFind.title}</h4>
-                        <p>{foodFind.content}</p>
-                        <p>{foodFind.price}</p>
+                        <h4 style={styles.titleStyle}>{foodFind.title}</h4>
+                        <p style={styles.fontBigBold}>{foodFind.content}</p>
+                        <p style={priceTextStyle}>{foodFind.price}</p>
+
+                        <p className={ foodFind.price >= 10000 ? 'price-red' : 'price-blue'}>{foodFind.price}</p>
+
+                        <p className={ 'text-strong ' + (foodFind.price >= 10000 ? 'price-red' : 'price-blue')}>{foodFind.price}</p>
+
+                        <p className={ ['text-strong ', priceTextClassName ].join(' ') }>{foodFind.price}</p>
+
+                        <p className={ `text-strong ${priceTextClassName}` }>{foodFind.price}</p>
+
+                        <p className={ `text-strong ${(foodFind.price>=10000 ? 'price-red' : 'price-blue')}` }>{foodFind.price}</p>
+                        
+
+                        {/* 
+                        ['text-strong','price-red'].join(' ')
+                        >>> text-strong price-red
+
+                        [a,b,c].join('-')
+                        >> a-b-c
+                        
+                        */}
+                        
 
                         <div>
                             <Button variant="dard" onClick={()=>{
