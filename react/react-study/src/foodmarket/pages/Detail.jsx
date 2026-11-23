@@ -6,6 +6,16 @@ import './Detail.css'
 
 function Detail({foods}) {
 
+    let {id} = useParams();
+    console.log(id);
+
+    // find
+    let foodFind = foods.find((food,index)=>{
+        return food.id == id;
+    } )
+    
+    console.log(foodFind);
+
     //------------------------------------------------\
     /*
 
@@ -95,6 +105,16 @@ function Detail({foods}) {
 
     },[orderCount])
 
+    let [soldOut, setSoldOut] = useState(false);
+
+
+    useEffect(()=>{
+        if(foodFind.stockCount === 0) {
+            setSoldOut(true);
+        } else {
+            setSoldOut(false);
+        }
+    }, [foodFind?.stockCount]);
 
 
     //------------------------------------------------------------------------
@@ -111,8 +131,7 @@ function Detail({foods}) {
     // id값으로 넘어온 값이 무엇이냐? ---> foods 데이터 중에 id가 같은 상품 찾기
 
     // :id 위치에 있는 값 접근
-    let {id} = useParams();
-    console.log(id);
+    
 
     // id와 같은 id 가진 food 데이터 찾기
 
@@ -123,12 +142,7 @@ function Detail({foods}) {
 
     // console.log(food);
 
-    // find
-    let foodFind = foods.find((food,index)=>{
-        return food.id == id;
-    } )
     
-    console.log(foodFind);
 
     let navigate = useNavigate();
 
@@ -159,16 +173,26 @@ function Detail({foods}) {
 
                         <div>
                             <Button variant="dard" onClick={()=>{
-                                setOrderCount(orderCount-1)
+                                setOrderCount(orderCount-1);
+                                if(orderCount<=0){
+                                    setOrderCount(0)
+                                }
                             }}>-</Button>
                             <span>{orderCount}</span>
                             <Button variant="dard" onClick={()=>{
                                 setOrderCount(orderCount+1)
                                 console.log('onClick() 함수에서 출력' + orderCount)
+                                if(orderCount>=foodFind.stockCount) {
+                                    setOrderCount(foodFind.stockCount);
+                                }
                             }}>+</Button>
                         </div>
 
-                        <Button variant="primary">주문하기</Button>
+                        {
+                            soldOut
+                            ? <Button variant="primary" disabled>품절</Button>
+                            : <Button variant="primary">주문하기</Button>
+                        }
                     </Col>
                 </Row>
 
